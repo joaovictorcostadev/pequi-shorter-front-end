@@ -1,0 +1,20 @@
+.form-control {
+    border-radius: 1rem !important;
+    height: 3.5rem;
+    border: 1.5px solid var(--secondary-color) !important;
+    padding: 0 1.25rem;
+    font-size: 0.95rem;
+    color: var(--text-color, #2b2b36);
+    background-color: var(--white-color, #ffffff);
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 4px rgba(33, 41, 92, 0.15) !important;
+        outline: none;
+    }
+
+    &::placeholder {
+        color: var(--text-muted, #9496a8);
+    }
+}

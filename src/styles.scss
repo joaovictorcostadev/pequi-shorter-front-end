@@ -1,11 +1,9 @@
-:root {
-    --primary-color: #21295c,
-    --secondary-color: #54568f,
-    --third-color: #f0edff,
-    --forty-color: #cda715,   
-}
+@use '../src/app/app.scss';
+
 
 html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    width: 100%;
 }

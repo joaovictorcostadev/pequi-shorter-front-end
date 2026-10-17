@@ -1,0 +1,74 @@
+<section class="page-login">
+
+    <div class="login-container">
+
+        <div class="login-logo">
+            <div class="logo-icon">
+                <i class="fa fa-link"></i>
+            </div>
+            <h1 class="brand-title">Pequi Shorter</h1>
+            <p class="brand-subtitle">Entre na sua conta para gerenciar seus links</p>
+        </div>
+        
+        <form class="login-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
+
+            <div *ngIf="errorMessage" class="alert alert-danger">
+                <i class="fa fa-exclamation-circle me-2"></i> {{ errorMessage }}
+            </div>
+
+            <div *ngIf="successMessage" class="alert alert-success">
+                <i class="fa fa-check-circle me-2"></i> {{ successMessage }}
+            </div>
+
+            <div class="form-container">
+                <label for="username">E-mail ou Usuário</label>
+                <input 
+                    id="username" 
+                    name="username"
+                    class="form-control" 
+                    type="text" 
+                    [(ngModel)]="username"
+                    placeholder="seu@email.com" 
+                    required>
+            </div>
+
+            <div class="form-container">
+                <div class="label-row">
+                    <label for="password">Senha</label>
+                    <a href="#" class="forgot-password" (click)="$event.preventDefault()">Esqueceu a senha?</a>
+                </div>
+                <input 
+                    id="password" 
+                    name="password"
+                    class="form-control" 
+                    type="password" 
+                    [(ngModel)]="password"
+                    placeholder="••••••••" 
+                    value="user123"
+                    required>
+            </div>
+
+            <div class="form-submit">
+                <button type="submit" class="btn btn-primary btn-login" [disabled]="isLoading || loginForm.invalid">
+                    <ng-container *ngIf="!isLoading">
+                        <i class="fa fa-sign-in me-2"></i> Entrar
+                    </ng-container>
+                    <ng-container *ngIf="isLoading">
+                        <i class="fa fa-spinner fa-spin me-2"></i> Entrando...
+                    </ng-container>
+                </button>
+
+                <div class="form-divider">
+                    <span>ou</span>
+                </div>
+
+                <button type="button" class="btn btn-outline-primary btn-create-account">
+                    <i class="fa fa-user-plus me-2"></i> Criar conta
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</section>

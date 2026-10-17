@@ -1,0 +1,23 @@
+:root {
+    --primary-color: #21295c;
+    --secondary-color: #54568f;
+    --third-color: #f0edff;
+    --forty-color: #cda715;
+    --offwhite-color: #f1f1e6;
+
+    /* Theme colors extended */
+    --primary-hover: #181f47;
+    --secondary-hover: #424474;
+    --forty-hover: #b59310;
+    --white-color: #ffffff;
+    --text-color: #2b2b36;
+    --text-muted: #6c757d;
+    --border-color: #e0e2ec;
+    --shadow-color: rgba(33, 41, 92, 0.12);
+}
+
+$primary-color: var(--primary-color);
+$secondary-color: var(--secondary-color);
+$third-color: var(--third-color);
+$forty-color: var(--forty-color);
+$offwhite-color: var(--offwhite-color);
