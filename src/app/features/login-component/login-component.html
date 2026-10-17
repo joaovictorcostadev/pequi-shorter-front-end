@@ -10,7 +10,7 @@
             <p class="brand-subtitle">Entre na sua conta para gerenciar seus links</p>
         </div>
         
-        <form class="login-form" (ngSubmit)="onLogin()">
+        <form class="login-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
 
             <div *ngIf="errorMessage" class="alert alert-danger">
                 <i class="fa fa-exclamation-circle me-2"></i> {{ errorMessage }}
@@ -44,11 +44,12 @@
                     type="password" 
                     [(ngModel)]="password"
                     placeholder="••••••••" 
+                    value="user123"
                     required>
             </div>
 
             <div class="form-submit">
-                <button type="submit" class="btn btn-primary btn-login" [disabled]="isLoading">
+                <button type="submit" class="btn btn-primary btn-login" [disabled]="isLoading || loginForm.invalid">
                     <ng-container *ngIf="!isLoading">
                         <i class="fa fa-sign-in me-2"></i> Entrar
                     </ng-container>

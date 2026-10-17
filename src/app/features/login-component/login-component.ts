@@ -11,8 +11,8 @@ import { AuthService } from '../../core/services/auth/auth-service';
   styleUrl: './login-component.scss',
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  username = 'user@test.com';
+  password = 'user123';
   isLoading = false;
   errorMessage = '';
   successMessage = '';
@@ -20,16 +20,16 @@ export class LoginComponent {
   constructor(private authService: AuthService) {}
 
   onLogin(): void {
-    if (!this.username || !this.password) {
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (!this.username.trim() || !this.password) {
       this.errorMessage = 'Por favor, preencha todos os campos.';
       return;
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-
-    this.authService.login(this.username, this.password).subscribe({
+    this.authService.login(this.username.trim(), this.password).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.successMessage = 'Login realizado com sucesso!';
