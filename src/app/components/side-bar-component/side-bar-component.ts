@@ -4,9 +4,11 @@ import {
   HostListener,
   Input,
   Output,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth/auth-service';
 
 export interface NavItem {
   id: string;
@@ -39,7 +41,6 @@ export class SideBarComponent {
 
   /** Informações do usuário */
   @Input() userName: string = 'Usuário Pequi';
-  @Input() userRole: string = 'Plano Grátis';
   @Input() userAvatarUrl: string = '';
 
   /** Itens de navegação configuráveis */
@@ -131,7 +132,10 @@ export class SideBarComponent {
     }
   }
 
+  private authService = inject(AuthService, { optional: true });
+
   onLogout(): void {
+    this.authService?.clearSession();
     this.logout.emit();
     this.router.navigate(['/login']);
     if (this.isMobileView()) {

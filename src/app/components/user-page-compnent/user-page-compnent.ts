@@ -15,7 +15,6 @@ export class UserPageCompnent {
 
   /** Dados do usuário repassados para a sidebar */
   @Input() userName: string = 'Usuário Pequi';
-  @Input() userRole: string = 'Plano Grátis';
   @Input() userAvatarUrl: string = '';
   @Input() logoSrc: string = '/logos/logo-v.png';
 

@@ -161,7 +161,7 @@
 
   <!-- Rodapé com Usuário e Logout -->
   <div class="sidebar-footer">
-    <div class="user-card" [title]="isCollapsed ? (userName + ' (' + userRole + ')') : ''">
+    <div class="user-card" [title]="isCollapsed ? (userName) : ''">
       <div class="user-avatar">
         @if (userAvatarUrl) {
           <img [src]="userAvatarUrl" [alt]="userName" class="avatar-img" />
@@ -172,7 +172,6 @@
 
       <div class="user-info">
         <span class="user-name">{{ userName }}</span>
-        <span class="user-role">{{ userRole }}</span>
       </div>
 
       <button
