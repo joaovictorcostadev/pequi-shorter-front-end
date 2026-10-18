@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth/auth-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-component',
@@ -17,7 +18,7 @@ export class LoginComponent {
   errorMessage = '';
   successMessage = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onLogin(): void {
     this.errorMessage = '';
@@ -33,6 +34,10 @@ export class LoginComponent {
       next: (response) => {
         this.isLoading = false;
         this.successMessage = 'Login realizado com sucesso!';
+        
+        // Redirect to home page after successful login
+        this.router.navigate(['/home']);
+
       },
       error: (err) => {
         this.isLoading = false;
