@@ -1,0 +1,158 @@
+<app-user-page-component>
+  <div class="urls-page-container">
+    <!-- Componente de Título de Página reutilizável com botão no canto superior direito -->
+    <app-page-title
+      title="Meus Links"
+      subtitle="Visualize, copie e gerencie todos os seus links encurtados"
+    >
+      <button
+        type="button"
+        class="btn btn-primary create-link-btn"
+        (click)="navigateToCreate()"
+      >
+        <i class="fa fa-plus me-2" aria-hidden="true"></i>
+        <span>Criar novo link</span>
+      </button>
+    </app-page-title>
+
+    <!-- Alerta de Erro -->
+    @if (errorMessage) {
+      <div class="alert alert-danger d-flex align-items-center justify-content-between my-3" role="alert">
+        <div>
+          <i class="fa fa-exclamation-triangle me-2" aria-hidden="true"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="loadUrls()">
+          <i class="fa fa-refresh me-1" aria-hidden="true"></i> Tentar novamente
+        </button>
+      </div>
+    }
+
+    <!-- Estado de Carregamento -->
+    @if (isLoading) {
+      <div class="loading-state text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando links...</span>
+        </div>
+        <p class="mt-3 text-muted">Carregando seus links...</p>
+      </div>
+    } @else {
+      <!-- Caso não tenha links: Informar que não foi encontrado -->
+      @if (urls.length === 0) {
+        <div class="empty-state card text-center py-5 px-3">
+          <div class="empty-icon mb-3">
+            <i class="fa fa-link" aria-hidden="true"></i>
+          </div>
+          <h2 class="empty-title">Nenhum link encontrado</h2>
+          <p class="empty-description text-muted">
+            Você ainda não possui nenhum link cadastrado. Clique no botão acima para começar a encurtar!
+          </p>
+          <div class="mt-3">
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="navigateToCreate()"
+            >
+              <i class="fa fa-plus me-2" aria-hidden="true"></i>
+              Criar meu primeiro link
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- Tabela com listagem de links -->
+        <div class="card table-card shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" class="ps-3">Código</th>
+                  <th scope="col">Link Encurtado</th>
+                  <th scope="col">URL Original</th>
+                  <th scope="col" class="text-end pe-3">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of urls; track item.id) {
+                  <tr>
+                    <td class="ps-3">
+                      <span class="badge bg-light text-dark border code-badge">
+                        /{{ item.name }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="short-url-cell d-flex align-items-center gap-2">
+                        <a
+                          [href]="item.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="short-url-link text-decoration-none fw-semibold"
+                          [title]="item.url"
+                        >
+                          {{ item.url }}
+                        </a>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-secondary copy-btn"
+                          [class.btn-success]="copiedUrlId === item.id"
+                          [class.text-white]="copiedUrlId === item.id"
+                          (click)="copyToClipboard(item)"
+                          [title]="copiedUrlId === item.id ? 'Copiado!' : 'Copiar link'"
+                        >
+                          <i
+                            class="fa"
+                            [class.fa-copy]="copiedUrlId !== item.id"
+                            [class.fa-check]="copiedUrlId === item.id"
+                            aria-hidden="true"
+                          ></i>
+                          <span class="ms-1">{{ copiedUrlId === item.id ? 'Copiado!' : 'Copiar' }}</span>
+                        </button>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="external-url-cell text-truncate" [title]="item.external_url">
+                        <a
+                          [href]="item.external_url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-muted text-decoration-none"
+                        >
+                          {{ item.external_url }}
+                        </a>
+                      </div>
+                    </td>
+                    <td class="text-end pe-3">
+                      <div class="btn-group btn-group-sm">
+                        <a
+                          [href]="item.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="btn btn-outline-primary"
+                          title="Abrir link no navegador"
+                        >
+                          <i class="fa fa-external-link" aria-hidden="true"></i>
+                        </a>
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger"
+                          (click)="onDelete(item)"
+                          [disabled]="deletingUrlId === item.id"
+                          title="Excluir link"
+                        >
+                          @if (deletingUrlId === item.id) {
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                          } @else {
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                          }
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</app-user-page-component>

@@ -55,7 +55,7 @@ export class SideBarComponent {
       id: 'shorten',
       label: 'Encurtar Link',
       icon: 'link',
-      routerLink: '/home',
+      routerLink: '/links/create',
       badge: 'Novo',
       badgeType: 'warning',
     },
@@ -63,7 +63,7 @@ export class SideBarComponent {
       id: 'my-links',
       label: 'Meus Links',
       icon: 'list',
-      routerLink: '/home',
+      routerLink: '/links',
     },
     {
       id: 'analytics',
