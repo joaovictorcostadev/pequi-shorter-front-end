@@ -1,0 +1,17 @@
+<div class="user-page-layout">
+  <!-- Barra lateral responsiva -->
+  <app-side-bar-component
+    [isCollapsed]="isSidebarCollapsed"
+    [userName]="userName"
+    [userAvatarUrl]="userAvatarUrl"
+    [logoSrc]="logoSrc"
+    (collapsedChange)="onSidebarCollapsed($event)"
+  ></app-side-bar-component>
+
+  <!-- Espaço em branco principal onde as páginas de usuário são renderizadas -->
+  <main class="user-page-main">
+    <div class="user-page-content">
+      <ng-content></ng-content>
+    </div>
+  </main>
+</div>

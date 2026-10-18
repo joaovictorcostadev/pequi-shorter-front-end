@@ -1,0 +1,59 @@
+@use '../../styles/variables/variables.scss' as *;
+
+.dashboard-header {
+  margin-bottom: 2rem;
+
+  .header-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0 0.35rem 0;
+  }
+
+  .header-subtitle {
+    font-size: 0.95rem;
+    color: var(--secondary-color);
+    margin: 0;
+  }
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+
+    .metric-card {
+      background-color: var(--white-color);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px var(--shadow-color);
+      }
+
+      .metric-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      .metric-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+    }
+  }
+}
