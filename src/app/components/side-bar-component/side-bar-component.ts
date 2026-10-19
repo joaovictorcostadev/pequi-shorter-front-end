@@ -3,11 +3,15 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
+  OnInit,
   Output,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Subscription, filter } from 'rxjs';
+
 import { AuthService } from '../../core/services/auth/auth-service';
 
 export interface NavItem {
@@ -26,7 +30,7 @@ export interface NavItem {
   templateUrl: './side-bar-component.html',
   styleUrl: './side-bar-component.scss',
 })
-export class SideBarComponent {
+export class SideBarComponent implements OnInit, OnDestroy {
   /** Se a sidebar está recolhida no modo desktop (somente ícones) */
   @Input() isCollapsed: boolean = false;
 
@@ -86,7 +90,37 @@ export class SideBarComponent {
   @Output() itemClick = new EventEmitter<NavItem>();
   @Output() logout = new EventEmitter<void>();
 
+  private routerSub?: Subscription;
+
   constructor(private router: Router) {}
+
+  ngOnInit(): void {
+    // Sincroniza o item ativo com a URL atual imediatamente ao montar o componente
+    this.syncActiveItem(this.router.url);
+
+    // Atualiza o item ativo a cada navegação concluída
+    this.routerSub = this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.syncActiveItem(event.urlAfterRedirects);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
+  }
+
+  /** Encontra o navItem cuja routerLink melhor corresponde à URL atual (match mais longo = mais específico) */
+  private syncActiveItem(url: string): void {
+    const cleanUrl = url.split('?')[0]; // ignora query params
+    const matched = this.navItems
+      .filter((item) => item.routerLink && cleanUrl.startsWith(item.routerLink))
+      .sort((a, b) => (b.routerLink?.length ?? 0) - (a.routerLink?.length ?? 0))[0];
+
+    if (matched) {
+      this.activeItemId = matched.id;
+    }
+  }
 
   get userInitials(): string {
     if (!this.userName) return 'PQ';
