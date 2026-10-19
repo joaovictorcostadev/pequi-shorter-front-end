@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserPageComponent } from '../../components/user-page-compnent/user-page-compnent';
 import { PageTitleComponent } from '../../components/page-title-component/page-title-component';
 import { UrlService } from '../../core/services/url/url-service';
 import { UrlDtoResponse } from '../../core/models/url.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-url-list-component',
@@ -23,6 +24,7 @@ export class UrlListComponent implements OnInit {
   constructor(
     private urlService: UrlService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -33,18 +35,26 @@ export class UrlListComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.urlService.getUrls().subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this.urls = response?.data ?? [];
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.errorMessage =
-          err?.error?.message ||
-          'Não foi possível carregar os links. Verifique sua conexão e tente novamente.';
-      },
-    });
+    this.urlService
+      .getUrls()
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          this.urls = response?.data ?? [];
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.errorMessage =
+            err?.error?.message ||
+            'Não foi possível carregar os links. Verifique sua conexão e tente novamente.';
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   navigateToCreate(): void {
@@ -52,15 +62,45 @@ export class UrlListComponent implements OnInit {
   }
 
   copyToClipboard(url: UrlDtoResponse): void {
+    const text = url.url;
+
     if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(url.url).then(() => {
-        this.copiedUrlId = url.id;
-        setTimeout(() => {
-          if (this.copiedUrlId === url.id) {
-            this.copiedUrlId = null;
-          }
-        }, 2000);
-      });
+      navigator.clipboard
+        .writeText(text)
+        .then(() => this.markAsCopied(url.id))
+        .catch(() => this.fallbackCopy(text, url.id));
+    } else {
+      this.fallbackCopy(text, url.id);
+    }
+  }
+
+  private markAsCopied(id: number): void {
+    this.copiedUrlId = id;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      if (this.copiedUrlId === id) {
+        this.copiedUrlId = null;
+        this.cdr.detectChanges();
+      }
+    }, 2000);
+  }
+
+  private fallbackCopy(text: string, id: number): void {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+      const success = document.execCommand('copy');
+      if (success) {
+        this.markAsCopied(id);
+      }
+    } finally {
+      document.body.removeChild(textarea);
     }
   }
 
@@ -75,9 +115,11 @@ export class UrlListComponent implements OnInit {
       next: () => {
         this.deletingUrlId = null;
         this.urls = this.urls.filter((item) => item.id !== url.id);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.deletingUrlId = null;
+        this.cdr.detectChanges();
         alert(err?.error?.message || 'Erro ao excluir o link. Tente novamente.');
       },
     });

@@ -20,11 +20,15 @@ export class UrlService {
       })
       .pipe(
         tap((response) => {
-          if (response?.data && response.data.length > 0) {
-            const firstWithUser = response.data.find((item) => item.user_id);
-            if (firstWithUser) {
-              this.currentUserId.set(firstWithUser.user_id);
+          try {
+            if (Array.isArray(response?.data) && response.data.length > 0) {
+              const firstWithUser = response.data.find((item) => item.user_id);
+              if (firstWithUser) {
+                this.currentUserId.set(firstWithUser.user_id);
+              }
             }
+          } catch {
+            // tap nunca deve matar o observable
           }
         }),
       );
