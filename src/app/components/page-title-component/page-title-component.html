@@ -1,0 +1,26 @@
+<header class="page-title-container">
+  <div class="page-title-main">
+    @if (backButtonText) {
+      <div class="page-back-wrapper mb-2">
+        <button
+          type="button"
+          class="btn btn-link p-0 text-decoration-none back-button"
+          (click)="onBack()"
+        >
+          <i class="fa fa-arrow-left me-1" aria-hidden="true"></i>
+          <span>{{ backButtonText }}</span>
+        </button>
+      </div>
+    }
+
+    <h1 class="page-title-heading">{{ title }}</h1>
+
+    @if (subtitle) {
+      <p class="page-title-subtitle">{{ subtitle }}</p>
+    }
+  </div>
+
+  <div class="page-title-actions">
+    <ng-content></ng-content>
+  </div>
+</header>

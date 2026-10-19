@@ -27,12 +27,18 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/font-awesome/web-fonts",
+                "output": "assets/font-awesome/web-fonts"
               }
             ],
             "styles": [
               "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/font-awesome/scss/font-awesome.scss"
+              
             ]
           },
           "configurations": {
