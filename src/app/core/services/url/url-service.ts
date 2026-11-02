@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { UrlDtoRequest, UrlDtoResponse, UrlListResponse, UrlResponse } from '../../models/url.model';
+import { UrlAccessListResponse } from '../../models/url-access.model';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +48,12 @@ export class UrlService {
 
   deleteUrl(id: number): Observable<UrlResponse> {
     return this.http.delete<UrlResponse>(`${this.baseUrl}/url/delete/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  getUrlAccess(id: number): Observable<UrlAccessListResponse> {
+    return this.http.get<UrlAccessListResponse>(`${this.baseUrl}/url/${id}/access`, {
       withCredentials: true,
     });
   }

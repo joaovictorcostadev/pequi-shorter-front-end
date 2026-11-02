@@ -1,0 +1,335 @@
+<app-user-page-component>
+  <div class="stats-detail-page-container">
+    <app-page-title
+      [title]="currentUrl ? 'Métricas: /' + currentUrl.name : 'Detalhes do Link'"
+      [subtitle]="currentUrl ? currentUrl.external_url : 'Visão geral do tráfego do link'"
+      backButtonText="Voltar para Estatísticas"
+      (backClick)="goBack()"
+    ></app-page-title>
+
+    <!-- Erro -->
+    @if (errorMessage) {
+      <div class="alert alert-danger d-flex align-items-center justify-content-between my-3" role="alert">
+        <div>
+          <i class="fa fa-exclamation-triangle me-2" aria-hidden="true"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="loadData()">
+          <i class="fa fa-refresh me-1" aria-hidden="true"></i> Tentar novamente
+        </button>
+      </div>
+    }
+
+    <!-- Carregando -->
+    @if (isLoading) {
+      <div class="loading-state text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando métricas...</span>
+        </div>
+        <p class="mt-3 text-muted">Carregando métricas e acessos do link...</p>
+      </div>
+    } @else {
+      <!-- Banner com informações do link -->
+      @if (currentUrl) {
+        <div class="link-summary-bar card shadow-sm mb-4">
+          <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="link-info-col">
+              <span class="text-muted small text-uppercase fw-semibold d-block">Link Encurtado</span>
+              <a [href]="currentUrl.url" target="_blank" rel="noopener noreferrer" class="link-short-text fw-bold">
+                {{ currentUrl.url }}
+                <i class="fa fa-external-link ms-1 small" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="link-info-col text-truncate" style="max-width: 480px;">
+              <span class="text-muted small text-uppercase fw-semibold d-block">Destino Original</span>
+              <span class="text-dark small text-truncate d-block" [title]="currentUrl.external_url">
+                {{ currentUrl.external_url }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Cards de KPIs -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="kpi-card card shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+              <div class="kpi-icon-wrap bg-primary-soft text-primary me-3">
+                <i class="fa fa-mouse-pointer" aria-hidden="true"></i>
+              </div>
+              <div>
+                <span class="kpi-label text-muted text-uppercase">Total de Cliques</span>
+                <h3 class="kpi-value mb-0">{{ totalClicks }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="kpi-card card shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+              <div class="kpi-icon-wrap bg-success-soft text-success me-3">
+                <i class="fa fa-users" aria-hidden="true"></i>
+              </div>
+              <div>
+                <span class="kpi-label text-muted text-uppercase">Visitantes Únicos</span>
+                <h3 class="kpi-value mb-0">{{ uniqueIps }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="kpi-card card shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+              <div class="kpi-icon-wrap bg-warning-soft text-warning me-3">
+                <i class="fa fa-globe" aria-hidden="true"></i>
+              </div>
+              <div>
+                <span class="kpi-label text-muted text-uppercase">País Principal</span>
+                <h3 class="kpi-value mb-0 text-truncate" [title]="topCountry">{{ topCountry }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+          <div class="kpi-card card shadow-sm h-100">
+            <div class="card-body d-flex align-items-center">
+              <div class="kpi-icon-wrap bg-info-soft text-info me-3">
+                <i class="fa fa-desktop" aria-hidden="true"></i>
+              </div>
+              <div>
+                <span class="kpi-label text-muted text-uppercase">Top Dispositivo</span>
+                <h3 class="kpi-value mb-0 text-truncate" [title]="topDevice">{{ topDevice }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caso não haja acessos registrados ainda -->
+      @if (totalClicks === 0) {
+        <div class="empty-state card text-center py-5 px-3 mb-4">
+          <div class="empty-icon mb-3">
+            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+          </div>
+          <h2 class="empty-title">Ainda não há acessos registrados</h2>
+          <p class="empty-description text-muted">
+            Este link ainda não recebeu acessos. Assim que os usuários clicarem na URL encurtada, as informações completas de acessos, dispositivos e localidades aparecerão aqui em tempo real.
+          </p>
+        </div>
+      } @else {
+        <!-- Gráfico dos Últimos 7 Dias -->
+        <div class="card shadow-sm chart-card mb-4">
+          <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa fa-area-chart text-primary" aria-hidden="true"></i>
+              <span class="fw-bold text-dark">Atividade nos Últimos 7 Dias</span>
+            </div>
+            <span class="badge bg-light text-muted border">Cliques / dia</span>
+          </div>
+          <div class="card-body pt-4">
+            <div class="timeline-chart">
+              @for (day of recentDays; track day.date) {
+                <div class="timeline-col">
+                  <span class="timeline-count fw-bold">{{ day.count }}</span>
+                  <div class="timeline-bar-track">
+                    <div
+                      class="timeline-bar-fill"
+                      [style.height.%]="day.heightPercent"
+                      [title]="day.displayDate + ': ' + day.count + ' acessos'"
+                    ></div>
+                  </div>
+                  <span class="timeline-date text-muted">{{ day.displayDate }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Seções em Grid: Geografia e Tecnologia -->
+        <div class="row g-4 mb-4">
+          <!-- Coluna 1: Geografia (Países e Cidades) -->
+          <div class="col-12 col-lg-6">
+            <div class="card shadow-sm h-100">
+              <div class="card-header bg-white border-bottom py-3">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa fa-map-marker text-primary" aria-hidden="true"></i>
+                  <span class="fw-bold text-dark">Localização dos Visitantes</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <!-- Países -->
+                <h6 class="text-uppercase text-muted fw-bold small mb-3">Principais Países</h6>
+                @if (countries.length === 0) {
+                  <p class="text-muted small">Sem dados geográficos disponíveis.</p>
+                } @else {
+                  <div class="distribution-list mb-4">
+                    @for (item of countries; track item.label) {
+                      <div class="distribution-item mb-2">
+                        <div class="d-flex justify-content-between small mb-1">
+                          <span class="fw-semibold text-dark">{{ item.label }}</span>
+                          <span class="text-muted">{{ item.count }} ({{ item.percentage }}%)</span>
+                        </div>
+                        <div class="progress progress-thin">
+                          <div class="progress-bar bg-primary" [style.width.%]="item.percentage"></div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Cidades -->
+                <h6 class="text-uppercase text-muted fw-bold small mb-3">Principais Cidades</h6>
+                @if (cities.length === 0) {
+                  <p class="text-muted small">Sem dados de cidades disponíveis.</p>
+                } @else {
+                  <div class="distribution-list">
+                    @for (item of cities; track item.label) {
+                      <div class="distribution-item mb-2">
+                        <div class="d-flex justify-content-between small mb-1">
+                          <span class="fw-semibold text-dark">{{ item.label }}</span>
+                          <span class="text-muted">{{ item.count }} ({{ item.percentage }}%)</span>
+                        </div>
+                        <div class="progress progress-thin">
+                          <div class="progress-bar bg-info" [style.width.%]="item.percentage"></div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna 2: Tecnologia (Dispositivos, Navegadores, OS) -->
+          <div class="col-12 col-lg-6">
+            <div class="card shadow-sm h-100">
+              <div class="card-header bg-white border-bottom py-3">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa fa-laptop text-primary" aria-hidden="true"></i>
+                  <span class="fw-bold text-dark">Dispositivos & Tecnologia</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <!-- Dispositivos -->
+                <h6 class="text-uppercase text-muted fw-bold small mb-3">Tipos de Dispositivo</h6>
+                <div class="distribution-list mb-4">
+                  @for (item of devices; track item.label) {
+                    <div class="distribution-item mb-2">
+                      <div class="d-flex justify-content-between small mb-1">
+                        <span class="fw-semibold text-dark">{{ item.label }}</span>
+                        <span class="text-muted">{{ item.count }} ({{ item.percentage }}%)</span>
+                      </div>
+                      <div class="progress progress-thin">
+                        <div class="progress-bar bg-warning" [style.width.%]="item.percentage"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <!-- Navegadores -->
+                <h6 class="text-uppercase text-muted fw-bold small mb-3">Navegadores</h6>
+                <div class="distribution-list mb-4">
+                  @for (item of browsers; track item.label) {
+                    <div class="distribution-item mb-2">
+                      <div class="d-flex justify-content-between small mb-1">
+                        <span class="fw-semibold text-dark">{{ item.label }}</span>
+                        <span class="text-muted">{{ item.count }} ({{ item.percentage }}%)</span>
+                      </div>
+                      <div class="progress progress-thin">
+                        <div class="progress-bar bg-success" [style.width.%]="item.percentage"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                <!-- Sistemas Operacionais -->
+                <h6 class="text-uppercase text-muted fw-bold small mb-3">Sistemas Operacionais</h6>
+                <div class="distribution-list">
+                  @for (item of operatingSystems; track item.label) {
+                    <div class="distribution-item mb-2">
+                      <div class="d-flex justify-content-between small mb-1">
+                        <span class="fw-semibold text-dark">{{ item.label }}</span>
+                        <span class="text-muted">{{ item.count }} ({{ item.percentage }}%)</span>
+                      </div>
+                      <div class="progress progress-thin">
+                        <div class="progress-bar bg-secondary" [style.width.%]="item.percentage"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela com Log dos Últimos Acessos -->
+        <div class="card shadow-sm table-card">
+          <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <i class="fa fa-history text-primary" aria-hidden="true"></i>
+              <span class="fw-bold text-dark">Histórico Detalhado de Acessos</span>
+            </div>
+            <span class="badge bg-light text-dark border">
+              Exibindo {{ accesses.length }} registro(s)
+            </span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" class="ps-3">Data / Hora</th>
+                  <th scope="col">IP</th>
+                  <th scope="col">Localização</th>
+                  <th scope="col">Dispositivo</th>
+                  <th scope="col">Navegador / OS</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of accesses; track item.id || item.updatedAt) {
+                  <tr>
+                    <td class="ps-3 text-nowrap">
+                      <span class="small fw-semibold text-dark">
+                        {{ formatDate(item.updatedAt) }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark border font-monospace">
+                        {{ item.ip }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center gap-1 small">
+                        <i class="fa fa-map-marker text-muted" aria-hidden="true"></i>
+                        <span>
+                          {{ item.city || '—' }}@if (item.state) {<span>, {{ item.state }}</span>}@if (item.country) {<span> - {{ item.country }}</span>}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-primary border">
+                        <i class="fa fa-desktop me-1" aria-hidden="true"></i>
+                        {{ item.deviceType || item.device_type || 'Desconhecido' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="small">
+                        <span class="fw-semibold text-dark">{{ item.browser || 'Browser' }}</span>
+                        @if (item.operatingSystem || item.operating_system) {
+                          <span class="text-muted"> ({{ item.operatingSystem || item.operating_system }})</span>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</app-user-page-component>

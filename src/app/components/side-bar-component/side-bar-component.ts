@@ -73,7 +73,7 @@ export class SideBarComponent implements OnInit, OnDestroy {
       id: 'analytics',
       label: 'Estatísticas',
       icon: 'chart',
-      routerLink: '/home',
+      routerLink: '/stats',
     },
     {
       id: 'settings',
