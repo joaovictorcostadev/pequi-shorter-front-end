@@ -54,15 +54,16 @@ describe('PageTitleComponent', () => {
   });
 
   it('should show back button and emit backClick when clicked', () => {
-    hostComponent.backText = 'Voltar';
-    hostFixture.detectChanges();
+    const fixture = TestBed.createComponent(TestHostComponent);
+    fixture.componentInstance.backText = 'Voltar';
+    fixture.detectChanges();
 
-    const compiled = hostFixture.nativeElement as HTMLElement;
+    const compiled = fixture.nativeElement as HTMLElement;
     const backBtn = compiled.querySelector('.back-button') as HTMLButtonElement;
     expect(backBtn).toBeTruthy();
     expect(backBtn.textContent).toContain('Voltar');
 
     backBtn.click();
-    expect(hostComponent.backClicked).toBe(true);
+    expect(fixture.componentInstance.backClicked).toBe(true);
   });
 });

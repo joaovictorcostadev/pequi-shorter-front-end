@@ -3,7 +3,7 @@ import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
 import { AuthService } from './auth-service';
-import { AuthResponse } from '../../models/auth.model';
+import { AuthResponse, UserRegisterRequest, UserRegisterResponse } from '../../models/auth.model';
 import { environment } from '../../../../environments/environment';
 
 describe('AuthService', () => {
@@ -47,6 +47,39 @@ describe('AuthService', () => {
 
   it('should start with unauthenticated state when storage is empty', () => {
     expect(service.isAuthenticated()).toBe(false);
+  });
+
+  it('should perform register request and return UserRegisterResponse', () => {
+    const registerPayload: UserRegisterRequest = {
+      name: 'Test User',
+      email: 'newuser@test.com',
+      password: 'password123',
+    };
+
+    const mockRegisterResponse: UserRegisterResponse = {
+      code: 200,
+      message: 'User created',
+      data: {
+        id: 42,
+        name: 'Test User',
+        email: 'newuser@test.com',
+        group_id: 2,
+      },
+    };
+
+    let result: UserRegisterResponse | undefined;
+
+    service.register(registerPayload).subscribe((res) => {
+      result = res;
+    });
+
+    const req = httpTesting.expectOne(`${environment.apiUrl}/user/auth/save`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(registerPayload);
+
+    req.flush(mockRegisterResponse);
+
+    expect(result).toEqual(mockRegisterResponse);
   });
 
   it('should perform login request with credentials and set session on 200', () => {

@@ -10,3 +10,23 @@ export interface AuthResponse {
   message: string;
   data: AuthResponseData;
 }
+
+export interface UserRegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface UserResponseData {
+  id: number;
+  name: string;
+  email: string;
+  group_id: number;
+}
+
+export interface UserRegisterResponse {
+  code: number;
+  message: string;
+  data: UserResponseData;
+}
+
