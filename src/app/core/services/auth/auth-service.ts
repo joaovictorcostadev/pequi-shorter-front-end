@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { AuthResponse } from '../../models/auth.model';
+import { AuthResponse, UserRegisterRequest, UserRegisterResponse } from '../../models/auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +20,13 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
   ) {}
+
+  register(request: UserRegisterRequest): Observable<UserRegisterResponse> {
+    return this.http.post<UserRegisterResponse>(
+      `${this.baseUrl}/user/auth/save`,
+      request,
+    );
+  }
 
   login(username: string, password: string): Observable<AuthResponse> {
     return this.http

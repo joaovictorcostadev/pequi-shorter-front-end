@@ -1,0 +1,97 @@
+<section class="page-register">
+
+    <div class="register-container">
+
+        <div class="register-logo">
+            <div class="logo-icon">
+                <i class="fa fa-user-plus"></i>
+            </div>
+            <h1 class="brand-title">Pequi Shorter</h1>
+            <p class="brand-subtitle">Crie sua conta para começar a gerenciar seus links</p>
+        </div>
+        
+        <form class="register-form" (ngSubmit)="onRegister()" #registerForm="ngForm">
+
+            <div *ngIf="errorMessage" class="alert alert-danger">
+                <i class="fa fa-exclamation-circle me-2"></i> {{ errorMessage }}
+            </div>
+
+            <div *ngIf="successMessage" class="alert alert-success">
+                <i class="fa fa-check-circle me-2"></i> {{ successMessage }}
+            </div>
+
+            <div class="form-container">
+                <label for="name">Nome completo</label>
+                <input 
+                    id="name" 
+                    name="name"
+                    class="form-control" 
+                    type="text" 
+                    [(ngModel)]="name"
+                    placeholder="Seu nome" 
+                    required
+                    minlength="2">
+            </div>
+
+            <div class="form-container">
+                <label for="email">E-mail</label>
+                <input 
+                    id="email" 
+                    name="email"
+                    class="form-control" 
+                    type="email" 
+                    [(ngModel)]="email"
+                    placeholder="seu@email.com" 
+                    required
+                    email>
+            </div>
+
+            <div class="form-container">
+                <label for="password">Senha</label>
+                <input 
+                    id="password" 
+                    name="password"
+                    class="form-control" 
+                    type="password" 
+                    [(ngModel)]="password"
+                    placeholder="Mínimo 6 caracteres" 
+                    required
+                    minlength="6">
+            </div>
+
+            <div class="form-container">
+                <label for="confirmPassword">Confirmar Senha</label>
+                <input 
+                    id="confirmPassword" 
+                    name="confirmPassword"
+                    class="form-control" 
+                    type="password" 
+                    [(ngModel)]="confirmPassword"
+                    placeholder="Repita sua senha" 
+                    required>
+            </div>
+
+            <div class="form-submit">
+                <button type="submit" class="btn btn-primary btn-register" [disabled]="isLoading || registerForm.invalid">
+                    <ng-container *ngIf="!isLoading">
+                        <i class="fa fa-user-plus me-2"></i> Cadastrar
+                    </ng-container>
+                    <ng-container *ngIf="isLoading">
+                        <i class="fa fa-spinner fa-spin me-2"></i> Criando conta...
+                    </ng-container>
+                </button>
+
+                <div class="form-divider">
+                    <span>ou</span>
+                </div>
+
+                <button type="button" class="btn btn-outline-primary btn-to-login" (click)="goToLogin()">
+                    <i class="fa fa-sign-in me-2"></i> Já tem uma conta? Entrar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
