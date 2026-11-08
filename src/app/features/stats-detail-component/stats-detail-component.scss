@@ -1,0 +1,214 @@
+@use '../../styles/variables/variables.scss' as *;
+
+.stats-detail-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 2.5rem;
+}
+
+// Banner do Link
+.link-summary-bar {
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background-color: var(--white-color);
+
+  .link-short-text {
+    color: var(--primary-color);
+    font-size: 1.05rem;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+  }
+}
+
+// KPI Cards
+.kpi-card {
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background-color: var(--white-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--shadow-color) !important;
+  }
+
+  .kpi-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+
+    &.bg-primary-soft {
+      background-color: var(--third-color);
+      color: var(--primary-color) !important;
+    }
+
+    &.bg-success-soft {
+      background-color: #e8f8f0;
+      color: #198754 !important;
+    }
+
+    &.bg-warning-soft {
+      background-color: #fff8e6;
+      color: var(--forty-color) !important;
+    }
+
+    &.bg-info-soft {
+      background-color: #e7f5ff;
+      color: #0d6efd !important;
+    }
+  }
+
+  .kpi-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .kpi-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+}
+
+// Timeline Chart (Últimos 7 dias)
+.chart-card {
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background-color: var(--white-color);
+}
+
+.timeline-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 180px;
+  padding: 0 1rem 0.5rem 1rem;
+  gap: 0.75rem;
+}
+
+.timeline-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 60px;
+  height: 100%;
+}
+
+.timeline-count {
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  margin-bottom: 0.35rem;
+  min-height: 1.1rem;
+}
+
+.timeline-bar-track {
+  width: 100%;
+  flex: 1;
+  background-color: var(--offwhite-color);
+  border-radius: 0.35rem;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 0;
+}
+
+.timeline-bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, var(--secondary-color), var(--primary-color));
+  border-radius: 0.35rem 0.35rem 0 0;
+  transition: height 0.4s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.15);
+  }
+}
+
+.timeline-date {
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  white-space: nowrap;
+}
+
+// Progress bars nas distribuições
+.progress-thin {
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--third-color);
+
+  .progress-bar {
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+}
+
+// Table Card
+.table-card {
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: var(--white-color);
+
+  th {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.9rem 0.85rem;
+    background-color: var(--offwhite-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  td {
+    padding: 0.85rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// Empty state
+.empty-state {
+  border: 2px dashed var(--border-color);
+  border-radius: 1rem;
+  background-color: var(--white-color);
+  padding: 3.5rem 1.5rem;
+
+  .empty-icon {
+    font-size: 3.25rem;
+    color: var(--secondary-color);
+    opacity: 0.65;
+  }
+
+  .empty-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-description {
+    max-width: 520px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+}

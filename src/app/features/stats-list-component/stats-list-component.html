@@ -1,0 +1,101 @@
+<app-user-page-component>
+  <div class="stats-list-page-container">
+    <app-page-title
+      title="Estatísticas de Links"
+      subtitle="Selecione um link para analisar métricas detalhadas de acessos, dispositivos e localidades"
+    ></app-page-title>
+
+    <!-- Alerta de Erro -->
+    @if (errorMessage) {
+      <div class="alert alert-danger d-flex align-items-center justify-content-between my-3" role="alert">
+        <div>
+          <i class="fa fa-exclamation-triangle me-2" aria-hidden="true"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="loadUrls()">
+          <i class="fa fa-refresh me-1" aria-hidden="true"></i> Tentar novamente
+        </button>
+      </div>
+    }
+
+    <!-- Estado de Carregamento -->
+    @if (isLoading) {
+      <div class="loading-state text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando links...</span>
+        </div>
+        <p class="mt-3 text-muted">Carregando seus links...</p>
+      </div>
+    } @else {
+      <!-- Caso não tenha links -->
+      @if (urls.length === 0) {
+        <div class="empty-state card text-center py-5 px-3">
+          <div class="empty-icon mb-3">
+            <i class="fa fa-line-chart" aria-hidden="true"></i>
+          </div>
+          <h2 class="empty-title">Nenhum link encontrado</h2>
+          <p class="empty-description text-muted">
+            Você ainda não possui links cadastrados para exibir métricas. Crie seu primeiro link para começar a coletar estatísticas!
+          </p>
+        </div>
+      } @else {
+        <!-- Tabela com listagem de links para estatísticas -->
+        <div class="card table-card shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" class="ps-3">Código</th>
+                  <th scope="col">Link Encurtado</th>
+                  <th scope="col">URL Original</th>
+                  <th scope="col" class="text-end pe-3">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of urls; track item.id) {
+                  <tr>
+                    <td class="ps-3">
+                      <span class="badge bg-light text-dark border code-badge">
+                        /{{ item.name }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="short-url-cell text-truncate">
+                        <span class="fw-semibold text-primary">
+                          {{ item.url }}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="external-url-cell text-truncate" [title]="item.external_url">
+                        <a
+                          [href]="item.external_url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-muted text-decoration-none"
+                        >
+                          {{ item.external_url }}
+                        </a>
+                      </div>
+                    </td>
+                    <td class="text-end pe-3">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-primary stats-action-btn"
+                        (click)="viewDetails(item)"
+                        title="Ver estatísticas deste link"
+                      >
+                        <i class="fa fa-bar-chart me-1" aria-hidden="true"></i>
+                        <span>Ver Detalhes</span>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</app-user-page-component>

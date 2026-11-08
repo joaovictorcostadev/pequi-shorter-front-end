@@ -1,0 +1,80 @@
+@use '../../styles/variables/variables.scss' as *;
+
+.url-form-container {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-header {
+  .back-link {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+
+    &:hover {
+      color: var(--primary-color);
+      text-decoration: underline !important;
+    }
+  }
+
+  .header-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0 0.35rem 0;
+  }
+
+  .header-subtitle {
+    font-size: 0.95rem;
+    color: var(--secondary-color);
+    margin: 0;
+  }
+}
+
+.form-card {
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  background-color: var(--white-color);
+
+  .input-group-text {
+    background-color: var(--offwhite-color);
+    border-color: var(--border-color);
+    color: var(--secondary-color);
+  }
+
+  .form-control {
+    border-color: var(--border-color);
+    padding: 0.65rem 0.9rem;
+    font-size: 0.95rem;
+
+    &:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 0.25rem rgba(84, 86, 143, 0.2);
+    }
+  }
+
+  .form-text {
+    font-size: 0.825rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+  }
+
+  .submit-btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    display: inline-flex;
+    align-items: center;
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+      box-shadow: 0 4px 12px var(--shadow-color);
+    }
+  }
+}

@@ -1,0 +1,103 @@
+<app-user-page-component>
+  <div class="url-form-container">
+    <app-page-title
+      title="Criar Novo Link"
+      subtitle="Encurte uma URL longa e compartilhe de forma simples e rápida"
+      backButtonText="Voltar para a listagem"
+      (backClick)="onCancel()"
+    ></app-page-title>
+
+    @if (errorMessage) {
+      <div class="alert alert-danger d-flex align-items-center my-3" role="alert">
+        <i class="fa fa-exclamation-circle me-2" aria-hidden="true"></i>
+        <div>{{ errorMessage }}</div>
+      </div>
+    }
+
+    <div class="card form-card shadow-sm">
+      <div class="card-body p-4">
+        <form #urlForm="ngForm" (ngSubmit)="onSubmit(urlForm)" novalidate>
+          <!-- URL Original -->
+          <div class="mb-4">
+            <label for="externalUrl" class="form-label fw-semibold">
+              URL de Destino <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa fa-globe" aria-hidden="true"></i>
+              </span>
+              <input
+                type="url"
+                id="externalUrl"
+                name="externalUrl"
+                class="form-control"
+                [(ngModel)]="externalUrl"
+                required
+                placeholder="https://exemplo.com/pagina-muito-longa"
+                [disabled]="isLoading"
+                #urlInput="ngModel"
+                [class.is-invalid]="urlInput.invalid && (urlInput.dirty || urlInput.touched)"
+              />
+            </div>
+            <div class="form-text">
+              Insira a URL completa para onde o usuário deve ser redirecionado.
+            </div>
+            @if (urlInput.invalid && (urlInput.dirty || urlInput.touched)) {
+              <div class="invalid-feedback d-block">
+                A URL de destino é obrigatória.
+              </div>
+            }
+          </div>
+
+          <!-- Código Customizado (Opcional) -->
+          <div class="mb-4">
+            <label for="customName" class="form-label fw-semibold">
+              Código Personalizado <span class="text-muted fw-normal">(Opcional)</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text text-muted">/r/</span>
+              <input
+                type="text"
+                id="customName"
+                name="customName"
+                class="form-control"
+                [(ngModel)]="customName"
+                placeholder="meu-link-customizado"
+                maxlength="50"
+                [disabled]="isLoading"
+              />
+            </div>
+            <div class="form-text">
+              Deixe em branco para gerar um código aleatório exclusivo de 8 caracteres automaticamente.
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="form-actions d-flex justify-content-end gap-2 pt-3 border-top">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="onCancel()"
+              [disabled]="isLoading"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary submit-btn"
+              [disabled]="urlForm.invalid || isLoading"
+            >
+              @if (isLoading) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <span>Salvando link...</span>
+              } @else {
+                <i class="fa fa-check me-2" aria-hidden="true"></i>
+                <span>Criar Link</span>
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</app-user-page-component>
