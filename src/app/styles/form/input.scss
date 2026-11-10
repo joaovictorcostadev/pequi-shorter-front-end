@@ -18,3 +18,9 @@
         color: var(--text-muted, #9496a8);
     }
 }
+
+@media (max-width: 768px) {
+    .form-control {
+        font-size: 16px; /* Evita que o iOS Safari dê zoom automático e desloque a tela ao focar */
+    }
+}
