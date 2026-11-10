@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap, timeout } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AuthResponse, UserRegisterRequest, UserRegisterResponse } from '../../models/auth.model';
 
@@ -12,6 +12,7 @@ export class AuthService {
   private readonly baseUrl = environment.apiUrl;
   private readonly SESSION_KEY = 'pequi_session_active';
   private readonly EXP_KEY = 'pequi_session_exp';
+  private readonly REQUEST_TIMEOUT_MS = 15000;
 
   private isAuthenticatedSignal = signal<boolean>(this.checkSession());
   readonly isAuthenticated$ = this.isAuthenticatedSignal.asReadonly();
@@ -22,10 +23,24 @@ export class AuthService {
   ) {}
 
   register(request: UserRegisterRequest): Observable<UserRegisterResponse> {
-    return this.http.post<UserRegisterResponse>(
-      `${this.baseUrl}/user/auth/save`,
-      request,
-    );
+    return this.http
+      .post<UserRegisterResponse>(
+        `${this.baseUrl}/user/auth/save`,
+        request,
+      )
+      .pipe(
+        timeout(this.REQUEST_TIMEOUT_MS),
+        map((response) => {
+          if (response && response.code && response.code !== 200) {
+            throw {
+              status: response.code,
+              error: { message: response.message || 'Falha ao criar conta.' },
+              message: response.message || 'Falha ao criar conta.',
+            };
+          }
+          return response;
+        }),
+      );
   }
 
   login(username: string, password: string): Observable<AuthResponse> {
@@ -36,6 +51,17 @@ export class AuthService {
         { withCredentials: true },
       )
       .pipe(
+        timeout(this.REQUEST_TIMEOUT_MS),
+        map((response) => {
+          if (response && response.code && response.code !== 200) {
+            throw {
+              status: response.code,
+              error: { message: response.message || 'Falha na autenticação.' },
+              message: response.message || 'Falha na autenticação.',
+            };
+          }
+          return response;
+        }),
         tap((response) => {
           if (response && response.code === 200) {
             this.setSession(response.data?.exp);

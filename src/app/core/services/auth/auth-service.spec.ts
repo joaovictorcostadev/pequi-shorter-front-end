@@ -108,6 +108,26 @@ describe('AuthService', () => {
     expect(localStorage.getItem('refresh_token')).toBeNull();
   });
 
+  it('should throw error when login response has code !== 200', () => {
+    let errorCaught: any;
+
+    service.login('user@test.com', 'wrongpassword').subscribe({
+      next: () => {
+        throw new Error('should have failed with code 401');
+      },
+      error: (err) => {
+        errorCaught = err;
+      },
+    });
+
+    const req = httpTesting.expectOne(`${environment.apiUrl}/user/auth/login`);
+    req.flush({ code: 401, message: 'Credenciais inválidas', data: null });
+
+    expect(errorCaught).toBeTruthy();
+    expect(errorCaught.error.message).toBe('Credenciais inválidas');
+    expect(service.isAuthenticated()).toBe(false);
+  });
+
   it('should clear session on clearSession() and logout()', () => {
     service.setSession(Date.now() + 60000);
     expect(service.isAuthenticated()).toBe(true);

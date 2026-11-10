@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { UserPageComponent } from '../../components/user-page-compnent/user-page-compnent';
 import { PageTitleComponent } from '../../components/page-title-component/page-title-component';
 import { UrlService } from '../../core/services/url/url-service';
@@ -23,6 +24,7 @@ export class UrlFormComponent {
   constructor(
     private urlService: UrlService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   onSubmit(form: NgForm): void {
@@ -30,6 +32,7 @@ export class UrlFormComponent {
 
     if (form.invalid || !this.externalUrl.trim()) {
       this.errorMessage = 'Por favor, informe uma URL externa válida.';
+      this.cdr.detectChanges();
       return;
     }
 
@@ -44,23 +47,28 @@ export class UrlFormComponent {
     };
 
     this.isLoading = true;
+    this.cdr.detectChanges();
 
-    this.urlService.createUrl(payload).subscribe({
-      next: () => {
-        this.isLoading = false;
-        // Se der certo, retorna para a listagem de URLs
-        this.router.navigate(['/links']);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        const message =
-          err?.error?.message ||
-          'Erro ao criar o link encurtado. Verifique os dados informados.';
-        this.errorMessage = message;
-        // Avisa do erro com alert
-        alert(message);
-      },
-    });
+    this.urlService
+      .createUrl(payload)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/links']);
+        },
+        error: (err) => {
+          const message =
+            err?.error?.message ||
+            'Erro ao criar o link encurtado. Verifique os dados informados.';
+          this.errorMessage = message;
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   onCancel(): void {

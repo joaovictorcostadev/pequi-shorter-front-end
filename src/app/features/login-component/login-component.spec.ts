@@ -80,6 +80,34 @@ describe('LoginComponent', () => {
     expect(component.errorMessage).toBe('Invalid credentials');
   });
 
+  it('should display timeout message on timeout error', () => {
+    authServiceSpy.login.mockReturnValue(
+      throwError(() => ({ name: 'TimeoutError' })),
+    );
+
+    component.username = 'test@example.com';
+    component.password = 'password123';
+
+    component.onLogin();
+
+    expect(component.isLoading).toBe(false);
+    expect(component.errorMessage).toContain('Tempo limite esgotado');
+  });
+
+  it('should display connection error message when status is 0', () => {
+    authServiceSpy.login.mockReturnValue(
+      throwError(() => ({ status: 0 })),
+    );
+
+    component.username = 'test@example.com';
+    component.password = 'password123';
+
+    component.onLogin();
+
+    expect(component.isLoading).toBe(false);
+    expect(component.errorMessage).toContain('Não foi possível conectar ao servidor');
+  });
+
   it('should navigate to /register when goToRegister is called', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.goToRegister();
