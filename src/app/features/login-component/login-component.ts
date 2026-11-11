@@ -13,8 +13,8 @@ import { finalize } from 'rxjs';
   styleUrl: './login-component.scss',
 })
 export class LoginComponent implements OnInit {
-  username = 'user@test.com';
-  password = 'user123';
+  username = '';
+  password = '';
   isLoading = false;
   errorMessage = '';
   successMessage = '';
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const registered = this.route.snapshot.queryParams['registered'];
